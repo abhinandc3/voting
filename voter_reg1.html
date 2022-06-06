@@ -210,11 +210,14 @@
     const db = getDatabase(app);
     const auth = getAuth(app);
 
-
+    var email;
+    var voterid;
+    var mobnumber;
+    var password;
     document.getElementById('frmContact').addEventListener('submit', function(e) {
     e.preventDefault();
     name = document.getElementById('name').value,
-    email=document.getElementById('email').value,
+    email = document.getElementById('email').value,
     voterid = document.getElementById('voterid').value,
     mobnumber = document.getElementById('mobnumber').value,
     password = document.getElementById('password').value;

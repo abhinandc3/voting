@@ -109,7 +109,7 @@
                                                 </span>
                                                 <input type="password" id="password" placeholder="Password" class="form-control" required/>
                                             </div><br><br>
-                                            <a href="profile.html"><button type="submit" name="submit">Submit</button></a>
+                                            <button type="submit" name="submit">Submit</button>
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +147,8 @@
     const db = getDatabase(app);
     const auth = getAuth(app);
 
-
+    var email;
+    var password;
     document.getElementById('frmContact').addEventListener('submit', function(e) {
     e.preventDefault();
     email=document.getElementById('email').value;
