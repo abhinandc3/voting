@@ -90,7 +90,7 @@
                     <div class="page-header-image" data-parallax="false" style="background-image: url('./assets/img/header.jpg');">
                     </div>
                     <div class="container">
-                            <form class="form-group" action="./admin_candidate.php" method="post">
+                            <form class="form-group" id="frmContact" method="post">
                                 <div class="row" style="padding-top: 20%">
                                     <div class="col-lg-4 col-md-8 col-lg-offset-4 col-md-offset-2a">
                                     </div>
@@ -101,15 +101,15 @@
                                                 <span class="input-group-addon">
                                                     <i class="material-icons" style="color:white">account_circle</i>
                                                 </span>
-                                                <input type="text" name="user" class="form-control" placeholder="Admin Name" required/>
+                                                <input type="text" name="user" id="email" class="form-control" placeholder="Admin Name" required/>
                                             </div>
                                             <div class="input-group form-group-no-border input-lg" >
                                                 <span class="input-group-addon">
                                                     <i class="material-icons" style="color:white">lock</i>
                                                 </span>
-                                                <input type="password" name="pass" placeholder="Admin Password" class="form-control" required/>
+                                                <input type="password" name="pass" id="password" placeholder="Admin Password" class="form-control" required/>
                                             </div><br><br>
-                                            <a href="admin_candidate.html"><input type="submit" class="btn btn-primary btn-round" name="signup_submit" value="Log in"></a>
+                                            <button type="submit" name="submit">Submit</button>
                                         </div>
                                     </div>
                                 </div>
@@ -123,6 +123,51 @@
         </div>
     </div>
 </body>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-auth.js";
+ 
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyClwhyjbLsTihJMUYtJxIQaeBoyiwM4wKY",
+        authDomain: "login-2d00a.firebaseapp.com",
+        databaseURL: "https://login-2d00a-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "login-2d00a",
+        storageBucket: "login-2d00a.appspot.com",
+        messagingSenderId: "457253558869",
+        appId: "1:457253558869:web:4582c9dc4365bf05a212dc"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    var email;
+    var password;
+    document.getElementById('frmContact').addEventListener('submit', function(e) {
+    e.preventDefault();
+    email=document.getElementById('email').value;
+    password = document.getElementById('password').value;
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+    // Signed in 
+        const user = userCredential.user;
+        window.location.href ="admin_candidate.html";
+        // password admin123
+
+    // ...
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+        });
+
+});
+</script>
 <!--   Core JS Files   -->
 <script src="./assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script src="./assets/js/core/tether.min.js" type="text/javascript"></script>
