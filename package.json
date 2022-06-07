@@ -1,0 +1,16 @@
+{
+  "name": "voting",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/abhinandc3/voting.git",
+  "author": "Jack <mjack1327@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "lite-server",
+    "truffle:migrate": "truffle migrate",
+    "truffle:compile": "truffle compile"
+  },
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
+}
