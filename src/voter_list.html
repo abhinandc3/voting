@@ -106,55 +106,25 @@
                 <div class="page-header clear-filter" filter-color="green">
                     <div class="page-header-image" data-parallax="false" style="background-image: url('./assets/img/header.jpg');">
                     </div>
-                    <div class="container" style="overflow:none">
-                        <div class="form-group">
-                                <div class="row" style="padding-top: 10%">
-                                    <div class="col-lg-12 col-md-12"><h2><span id="nameofpage"></span> List</h2>
-                                    </div>
-                                    <div class="col-lg-2 col-md-2">
-                                    </div>
-                                    <div class="col-lg-8 col-md-8" style="overflow-y:scroll">
-                                       <div class="alert" role="alert">
-                                            <div class="container">
-                                                <div class="alert-icon">
-                                                    <i class="now-ui-icons travel_info"></i>
-                                                    
-                                                </div>
-                                                <div class="alert-icon"><strong><span id="nameofpage1"></span> ID</strong></div>
-                                                 Name
-                                                
-                                            </div>
-                                        </div>
-                                                        <div class="alert alert-primary-green" role="alert">
-                                                            <div class="container">
-                                                                <div class="alert-icon">
-                                                                    <i class="now-ui-icons travel_info"></i>
-
-                                                                </div>
-                                                                <div class="alert-icon"></div>
-                                                                  
-                                                                <button type="button" class="close" value="" onClick ="showHint(this.value)">
-                                                                        <span aria-hidden="true">details
-                                                                    </span>
-                                                                </button>
-                                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                                        <span aria-hidden="true">
-                                                                        <i class="now-ui-icons ui-1_simple-remove"></i>
-                                                                    </span>
-                                                                </button>
-                                                                
-                                                                <div id=""></div>
-                                                            </div>
-                                                        </div>
-                                                       
-                                        
-                                        
-                                    </div>
-                                    <div class="col-lg-2 col-md-2">
-                                    </div>
-                                </div>
-                            <a href="admin_candidate.html"><input class="btn btn-primary btn-round" type="submit" name="View" value="Go Back" /></a>
-                        </div>
+                    <div class="container" style="padding-top: 10%">
+                        
+                            <div id="content" class="w-100">
+                                <table class="table">
+                                  <thead>
+                                    
+                                      <th >sno</th>
+                                      <th  style="text-align: center">Name</th>
+                                      <th  style="text-align: center">mobnumber</th>
+                                      <th  style="text-align: center">email</th>
+                                      <th  style="text-align: center">voterid</th>
+                                    
+                                    
+                                  </thead>
+                                  <tbody id="voters"></tbody>
+                                </table>
+                           
+                                <a href="admin_candidate.html"><input class="btn btn-primary btn-round" type="submit" name="View" value="Go Back" /></a>
+                            </div>
 
                     </div>
                 </div>
@@ -190,6 +160,85 @@
         </div>
     </div>
 </body>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { getDatabase, ref, set, get, child, onValue } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
+    
+ 
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqlCBGOgf1xcJqPA33a4Ng5zyuloR_4FY",
+      authDomain: "voting-4268f.firebaseapp.com",
+      projectId: "voting-4268f",
+      storageBucket: "voting-4268f.appspot.com",
+      messagingSenderId: "662575643087",
+      appId: "1:662575643087:web:6303a1b5ed2eda754ebaba"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+ // add data to display
+    var VoterNo = 0 ;
+    var tbody = document.getElementById('voters')
+    function AddItemsToTable(name,mobnumber,email,voterid){
+        
+        let trow = document.createElement('tr');
+        let td1 = document.createElement('td');
+        let td2 = document.createElement('td');
+        let td3 = document.createElement('td');
+        let td4 = document.createElement('td');
+        let td5 = document.createElement('td');
+        td1.innerHTML = ++VoterNo;
+        td2.innerHTML = name;
+        td3.innerHTML = mobnumber;
+        td4.innerHTML = email;
+        td5.innerHTML = voterid;
+        
+
+        trow.appendChild(td1);
+        trow.appendChild(td2);
+        trow.appendChild(td3);
+        trow.appendChild(td4);
+        trow.appendChild(td5);
+
+        tbody.appendChild(trow);
+
+
+        
+    }
+    function AddAllItemsToTable(users){
+        VoterNo=0;
+        tbody.innerHTML="";
+        users.forEach(element => {
+            AddItemsToTable(element.name,element.mobnumber,element.email,element.voterid);
+
+        }
+        );
+    }
+    function GetallData(){
+        const dbRef =ref(db,"users");
+        onValue(dbRef,(snapshot)=> {
+            var voters = [];
+
+            snapshot.forEach(childSnapshot => {
+                voters.push(childSnapshot.val());
+
+
+
+        });
+        AddAllItemsToTable(voters);
+    })
+
+
+
+    }
+
+    window.onload = GetallData;
+</script>
 <!--   Core JS Files   -->
 <script src="./assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script src="./assets/js/core/tether.min.js" type="text/javascript"></script>
@@ -208,21 +257,5 @@
     
    
 </script>
-<script>
-            var str=window.location.href;
-            pattern=/\?vote$/;
-            var res=pattern.test(str);
-            var title = document.getElementById('nameofpage');
-            var title1 = document.getElementById('nameofpage1');
-            if(res==true)
-                {
-                    title.innerHTML="Candidate";
-                    title1.innerHTML="Candidate";
-                }
-            else{
-                title.innerHTML="Voter";
-                title1.innerHTML="Voter";
-            }
-            
-        </script>
+
 </html>
