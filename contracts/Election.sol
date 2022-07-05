@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <=0.8.12;
+pragma solidity >=0.4.22 <0.9.0;
 
 contract Election {
     // Model a Candidate
+    bool public isVotingStarted;
     struct Candidate {
         uint256 id;
         string name;
         uint256 voteCount;
+        string party;
     }
 
     // Store accounts that have voted
@@ -21,13 +23,17 @@ contract Election {
     event votedEvent(uint256 indexed _candidateId);
 
     constructor() public {
-        addCandidate("Candidate 1");
-        addCandidate("Candidate 2");
+        isVotingStarted = false;
     }
 
-    function addCandidate(string memory _name) private {
+    function addCandidate(string memory _name, string memory _party) public {
         candidatesCount++;
-        candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
+        candidates[candidatesCount] = Candidate(
+            candidatesCount,
+            _name,
+            0,
+            _party
+        );
     }
 
     function vote(uint256 _candidateId) public {
@@ -45,5 +51,9 @@ contract Election {
 
         // trigger voted event
         emit votedEvent(_candidateId);
+    }
+
+    function toggleVoting() public {
+        isVotingStarted = !isVotingStarted;
     }
 }

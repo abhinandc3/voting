@@ -37,7 +37,7 @@ App = {
   },
 
   initContract: function () {
-    $.getJSON('../Election.json', function (election) {
+    $.getJSON('./Election.json', function (election) {
       // Instantiate a new truffle contract from the artifact
       App.contracts.Election = TruffleContract(election);
       // Connect provider to interact with contract
@@ -73,9 +73,8 @@ App = {
 
   render: async () => {
     var electionInstance;
-    const loader = $('#loader');
-    const content = $('#content');
-    const started = $('#notStarted');
+    var loader = $('#loader');
+    var content = $('#content');
 
     loader.show();
     content.hide();
@@ -101,83 +100,28 @@ App = {
         return electionInstance.candidatesCount();
       })
       .then(async (candidatesCount) => {
-        const isVotingStarted = await electionInstance.isVotingStarted();
-        console.log({ isVotingStarted });
-        if (!isVotingStarted) {
-          started.show();
-          loader.hide();
-          content.hide();
-          throw new Error();
-        } else {
-          started.hide();
-          const promise = [];
-          for (var i = 1; i <= candidatesCount; i++) {
-            promise.push(electionInstance.candidates(i));
-          }
-
-          const candidates = await Promise.all(promise);
-          var candidatesResults = $('#candidatesResults');
-          candidatesResults.empty();
-
-          var candidatesSelect = $('#candidatesSelect');
-          candidatesSelect.empty();
-
-          for (var i = 0; i < candidatesCount; i++) {
-            var id = candidates[i][0];
-            var name = candidates[i][1];
-            var voteCount = candidates[i][2];
-
-            // Render candidate Result
-            var candidateTemplate =
-              '<tr><th>' +
-              id +
-              '</th><td>' +
-              name +
-              '</td><td>' +
-              voteCount +
-              '</td></tr>';
-            candidatesResults.append(candidateTemplate);
-
-            // Render candidate ballot option
-            var candidateOption =
-              "<option value='" + id + "' >" + name + '</ option>';
-            candidatesSelect.append(candidateOption);
-          }
-
-          return electionInstance.voters(App.account);
+        const promise = [];
+        for (var i = 1; i <= candidatesCount; i++) {
+          promise.push(electionInstance.candidates(i));
         }
-      })
-      .then(function (hasVoted) {
-        // Do not allow a user to vote
-
-        console.log(hasVoted);
-        if (hasVoted) {
-          $('form').hide();
-          $('#votedMessage').show();
-        } else {
-          $('#votedMessage').hide();
-        }
-        loader.hide();
+        const candidates = await Promise.all(promise);
+        console.log('candidates', candidates);
+        const tbody = document.getElementById('voters');
+        $('#voters').empty();
+        candidates.forEach((user, index) => {
+          let trow = document.createElement('tr');
+          let td1 = document.createElement('td');
+          let td2 = document.createElement('td');
+          let td3 = document.createElement('td');
+          td1.innerHTML = index + 1;
+          td2.innerHTML = user[1];
+          td3.innerHTML = user[3];
+          trow.appendChild(td1);
+          trow.appendChild(td2);
+          trow.appendChild(td3);
+          tbody.appendChild(trow);
+        });
         content.show();
-      })
-      .catch(function (error) {
-        console.warn(error);
-      });
-  },
-
-  castVote: function () {
-    var candidateId = $('#candidatesSelect').val();
-    App.contracts.Election.deployed()
-      .then(function (instance) {
-        return instance.vote(candidateId, { from: App.account });
-      })
-      .then(function (result) {
-        // Wait for votes to update
-        $('#content').hide();
-        $('#loader').show();
-      })
-      .catch(function (err) {
-        console.error(err);
       });
   },
 };
