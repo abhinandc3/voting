@@ -35,6 +35,21 @@
               <a class="btn btn-primary" href="/result_u.html">See Result</a>
             </div>
             <hr />
+            <div class="container" style="padding-top: 10%">
+                        
+              <div id="content" class="w-100">
+                  <table class="table">
+                    <thead>
+                      
+                        <th >candidate no</th>
+                        <th  style="text-align: center">Name</th>
+                      
+                      
+                    </thead>
+                    <tbody id="voters"></tbody>
+                  </table>
+              </div>
+            </div>
             <form onSubmit="App.castVote(); return false;">
               <div class="form-group">
                 <label for="candidatesSelect">Select Candidate</label>
@@ -57,4 +72,67 @@
     <script src="js/truffle-contract.js"></script>
     <script src="js/app.js"></script>
   </body>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { getDatabase, ref, set, get, child, onValue  } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAfgvfeX2tyWtBXL2y2L0AeOGRwW70jCjY",
+      authDomain: "candidate-d2d95.firebaseapp.com",
+      databaseURL: "https://candidate-d2d95-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "candidate-d2d95",
+      storageBucket: "candidate-d2d95.appspot.com",
+      messagingSenderId: "279669923283",
+      appId: "1:279669923283:web:c0419418106db4a315e326"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    var candidateno = 0;
+    var tbody = document.getElementById('voters')
+    function AddItemsToTable(name){
+        
+        let trow = document.createElement('tr');
+        let td1 = document.createElement('td');
+        let td2 = document.createElement('td');
+        td1.innerHTML = ++candidateno;
+        td2.innerHTML = name;
+        trow.appendChild(td1);
+        trow.appendChild(td2);
+        tbody.appendChild(trow);      
+    }
+    function AddAllItemsToTable(users){
+        candidateno=0;
+        tbody.innerHTML="";
+        users.forEach(element => {
+            AddItemsToTable(element.name);
+
+        }
+        );
+    }
+    function GetallData(){
+        const dbRef =ref(db,"users");
+        onValue(dbRef,(snapshot)=> {
+            var voters = [];
+
+            snapshot.forEach(childSnapshot => {
+                voters.push(childSnapshot.val());
+
+
+
+        });
+        AddAllItemsToTable(voters);
+    })
+
+
+
+    }
+
+    window.onload = GetallData;
+  
+    // Initialize Firebase
+    </script>
 </html>
